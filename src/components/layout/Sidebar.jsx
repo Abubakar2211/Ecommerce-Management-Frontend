@@ -23,6 +23,18 @@ export default function Sidebar() {
                             <span className="ms-3">Users</span>
                         </Link>
                     </li>
+                    <li>
+                        <Link to="/roles" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
+                            <i className="fa-solid fa-user-shield text-lg"></i>
+                            <span className="ms-3">Roles</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/permissions" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
+                                <i className="fa-solid fa-key text-lg"></i>
+                            <span className="ms-3">Permissions</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </aside>

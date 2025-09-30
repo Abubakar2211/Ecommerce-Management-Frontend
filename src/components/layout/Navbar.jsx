@@ -4,7 +4,7 @@ export default function Navbar() {
             <input
                 type="text"
                 placeholder="Search..."
-                className="px-3 py-1 border rounded-lg focus:outline-none focus:ring-2 border-white text-white text-sm"
+                className="px-3 py-1 w-100 border rounded-lg focus:outline-none focus:ring-2 border-white text-white text-sm"
             />
             <button className="px-4 py-1 bg-white-500 text-white text-xs hover:bg-stone-700 hover:py-2 hover:rounded ">
                 Logout

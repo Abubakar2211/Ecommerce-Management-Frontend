@@ -1,23 +1,27 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function User() {
     const [user, setUser] = useState([]);
+    const token = localStorage.getItem('authToken');
+    const api = `${import.meta.env.VITE_BASE_URL_API}/api/user`;
+    const getUser = async () => {
+        try {
+            const res = await axios.get(api, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(res.data.user.data);
+            setUser(res.data.user.data);
+        } catch (error) {
+            console.log([error.response?.status, error.message]);
+        }
+    }
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL_API}/api/user`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-                "Contect-Type": "application/json",
-            }
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-                setUser(data.user.data || [])
-            })
-            .catch((err) => console.log(err));
+        getUser();
     }, [])
     return (
         <>

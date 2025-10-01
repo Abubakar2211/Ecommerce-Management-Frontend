@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Main from "../../components/layout/Main";
+import Select from "react-select/base";
 export default function UserCreate() {
 
     const [name, setName] = useState("");
@@ -11,8 +12,15 @@ export default function UserCreate() {
     const handleUserCreate = (e) => {
         e.preventDefault();
         console.log({ "User Name": name, "User Email": email, "User Password": password, "User Role": role, "User Permission": permission });
+        setName(""), setEmail(""), setPassword(""), setRole(""), setPermission("")
     }
 
+    const roles = [
+        { value: "Admin", label: "Admin" },
+        { value: "Agent", label: "Agent" },
+        { value: "User", label: "User" },
+        { value: "Superadmin", label: "Superadmin" },
+    ];
 
     return (
         <Main>
@@ -23,35 +31,32 @@ export default function UserCreate() {
                     {/* Name */}
                     <div>
                         <label className="block text-stone-700 mb-1 text-sm" htmlFor="name">Full Name</label>
-                        <input type="text" id="name" onChange={(e) => setName(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter full name" />
+                        <input type="text" value={name} id="name" onChange={(e) => setName(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter full name" />
                     </div>
 
                     {/* Email */}
                     <div>
                         <label className="block text-stone-700 mb-1 text-sm" htmlFor="email">Email</label>
-                        <input type="email" id="email" onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter email address" />
+                        <input type="email" value={email} id="email" onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter email address" />
                     </div>
 
                     {/* Password */}
                     <div>
                         <label className="block text-stone-700 mb-1 text-sm" htmlFor="password">Password</label>
-                        <input type="password" id="password" onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter password" />
+                        <input type="password" value={password} id="password" onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter password" />
                     </div>
 
                     {/* Role */}
                     <div>
                         <label className="block text-stone-700 mb-1 text-sm" htmlFor="role">Role</label>
-                        <select id="role" onChange={(e) => setRole(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500">
-                            <option value="">Select role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </select>
+                        <Select options={roles} value={role} onChange={(e) => setRole(e.target.value)} placeholder="Search or select..." />
+
                     </div>
 
                     {/* Permissions */}
                     <div>
                         <label className="block text-stone-700 mb-1 text-sm" htmlFor="permissions">Permissions</label>
-                        <select onChange={(e) => setPermission(e.target.value)} id="permissions" className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500">
+                        <select value={permission} onChange={(e) => setPermission(e.target.value)} id="permissions" className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500">
                             <option value="">Select permissions</option>
                             <option value="create permission">Create Permission</option>
                             <option value="edit permission">Edit Permission</option>

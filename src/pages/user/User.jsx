@@ -83,7 +83,7 @@ export default function User() {
                             ))}
                         </tbody>
                     </table>
-                    <div className="flex justify-end mt-3">
+                    {/* <div className="flex justify-end mt-3">
                         <nav aria-label="Page navigation">
                             <ul className="inline-flex -space-x-px text-xs">
                                 <li>
@@ -100,6 +100,18 @@ export default function User() {
                                 </li>
                                 <li>
                                     <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-white bg-stone-800 border border-stone-700 rounded-r-lg hover:bg-stone-700 hover:text-white transition"> Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div> */}
+                    <div className="flex justify-end mt-3">
+                        <nav>
+                            <ul className="inline-flex text-sm">
+                                <li>
+                                    <button className="px-3 rounded-l-lg h-8 bg-stone-800 text-white hover:bg-stone-700">Previous</button>
+                                </li>
+                                <li>
+                                    <button>Next</button>
                                 </li>
                             </ul>
                         </nav>

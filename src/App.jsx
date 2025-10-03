@@ -18,8 +18,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<User />} />
           <Route path="/user/create" element={<UserCreate />} />
-          <Route path="/user/edit" element={<UserEdit />} />
-          <Route path="/roles" element={<Role />} />
+          <Route path="/user/edit/:id" element={<UserEdit />} />
+          <Route path="/roles" element={<Role />} /> 
           <Route path="/permissions" element={<Permission />} />
         </Route >
       </Routes>

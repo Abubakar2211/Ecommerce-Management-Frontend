@@ -5,17 +5,21 @@ import axios from "axios";
 
 export default function User() {
     const [user, setUser] = useState([]);
+    const [nextPage, setNextPage] = useState(null);
+    const [prevPage, setPrevPage] = useState(null);
     const token = localStorage.getItem('authToken');
     const api = `${import.meta.env.VITE_BASE_URL_API}/api/user`;
-    const getUser = async () => {
+    const getUser = async (url = api) => {
         try {
-            const res = await axios.get(api, {
+            const res = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
             console.log(res.data.user.data);
             setUser(res.data.user.data);
+            setNextPage(res.data.user.next_page_url);
+            setPrevPage(res.data.user.prev_page_url);
         } catch (error) {
             console.log([error.response?.status, error.message]);
         }
@@ -28,10 +32,7 @@ export default function User() {
             <Main>
                 <div className="flex justify-between">
                     <h1 className="text-lg">Users</h1>
-                    <Link
-                        to="/user/create"
-                        className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 transition"
-                    >
+                    <Link to="/user/create" className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 transition">
                         + Create
                     </Link>
                 </div>
@@ -69,10 +70,10 @@ export default function User() {
                                         <Link to="/user/assignpermission">
                                             <i className="fa-solid fa-key text-md"></i>
                                         </Link>
-                                        <Link to="/user/assignrole">
+                                        <Link to={`/user/assignrole/${user.id}`}>
                                             <i className="fa-solid fa-user-shield text-md"></i>
                                         </Link>
-                                        <Link to="/user/edit">
+                                        <Link to={`/user/edit/${user.id}`}>
                                             <i className="fa-solid fa-pen-to-square text-md"></i>
                                         </Link>
                                         <Link to="/user/delete">
@@ -83,35 +84,14 @@ export default function User() {
                             ))}
                         </tbody>
                     </table>
-                    {/* <div className="flex justify-end mt-3">
-                        <nav aria-label="Page navigation">
-                            <ul className="inline-flex -space-x-px text-xs">
-                                <li>
-                                    <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-white bg-stone-800 border border-stone-700 rounded-l-lg hover:bg-stone-700 hover:text-white transition"> Previous</a>
-                                </li>
-                                <li>
-                                    <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-stone-700 bg-white border border-stone-200 hover:bg-stone-100 hover:text-stone-800 transition"> 1</a>
-                                </li>
-                                <li>
-                                    <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-stone-700 bg-white border border-stone-200 hover:bg-stone-100 hover:text-stone-800 transition"> 2</a>
-                                </li>
-                                <li>
-                                    <a href="#" aria-current="page" className="flex items-center justify-center px-3 h-8 text-white bg-stone-800 border border-stone-700 hover:bg-stone-700 hover:text-white transition"> 3</a>
-                                </li>
-                                <li>
-                                    <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-white bg-stone-800 border border-stone-700 rounded-r-lg hover:bg-stone-700 hover:text-white transition"> Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div> */}
                     <div className="flex justify-end mt-3">
                         <nav>
-                            <ul className="inline-flex text-sm">
+                            <ul className="inline-flex text-sm gap-0.5">
                                 <li>
-                                    <button className="px-3 rounded-l-lg h-8 bg-stone-800 text-white hover:bg-stone-700">Previous</button>
+                                    <button onClick={()=>prevPage && getUser(prevPage)} disabled={!prevPage} className={`px-3 rounded-l-lg h-8 ${prevPage ? "bg-stone-800 text-white hover:bg-stone-700" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>Previous</button>
                                 </li>
                                 <li>
-                                    <button>Next</button>
+                                    <button onClick={()=>nextPage && getUser(nextPage)} disabled={!nextPage} className={`px-3 rounded-r-lg h-8 ${nextPage ? "bg-stone-800 text-white hover:bg-stone-700" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}                                  >Next</button>
                                 </li>
                             </ul>
                         </nav>

@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import Api from "../../utils/api";
+import Spinner from "../../components/Spinner";
 
 export default function User() {
     const [user, setUser] = useState([]);
@@ -13,28 +13,26 @@ export default function User() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const token = localStorage.getItem('authToken');
-    const api = `${import.meta.env.VITE_BASE_URL_API}/api/user`;
-    const getUser = async (url = api) => {
+    const [loading, setLoading] = useState(true);
+    const getUser = async (url = "/user") => {
         try {
-            const res = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log(res.data.user.data);
+            setLoading(true);
+            const res = await Api().get(url);
             setUser(res.data.user.data);
             setNextPage(res.data.user.next_page_url);
             setPrevPage(res.data.user.prev_page_url);
+            setLoading(false);
         } catch (error) {
             console.log([error.response?.status, error.message]);
         }
     }
 
     const handleDeleteUser = async (id) => {
-        try{    
+        try{
+            setLoading(true);
             const res = await Api().delete(`/user/${id}`);
             res.data.message ? toast.success(res.data.message) :  toast.error(res.data.error)
+            setLoading(false);
             getUser();
         }catch(err){
             console.log("Error:",err.response?.data || err.message); 
@@ -98,6 +96,7 @@ export default function User() {
                         + Create
                     </Link>
                 </div>
+               {loading ? ( <Spinner/> )  :(
                 <div>
                     <table className="w-full  border border-stone-200 shadow-md rounded-lg border-rounded">
                         <thead className="bg-stone-800 text-white">
@@ -118,7 +117,7 @@ export default function User() {
                         </thead>
                         <tbody className="divide-y divide-stone-200">
                             {user.map((user, index) => (
-                                <tr className="hover:bg-stone-100 transition">
+                                <tr key={user.id || index} className="hover:bg-stone-100 transition">
                                     <td className="px-6 py-4  text-stone-700 text-xs ">
                                         {index + 1}
                                     </td>
@@ -162,6 +161,7 @@ export default function User() {
                         </nav>
                     </div>
                 </div>
+               )}
                 <ToastContainer />
             </Main>
         </>

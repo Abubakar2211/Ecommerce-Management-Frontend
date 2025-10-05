@@ -3,6 +3,10 @@ import Main from "../../components/layout/Main";
 import { ToastContainer, toast } from "react-toastify";
 import Api from "../../utils/api";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Button from "../../utils/Button";
+import LinkButton from "../../utils/LinkButton";
+import Label from "../../utils/Label";
+import Input from "../../utils/Input";
 export default function UserAction() {
 
     const [userId, setUserId] = useState("");
@@ -58,34 +62,30 @@ export default function UserAction() {
             <div className=" bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between">
                     <h2 className="text-2xl font-bold text-stone-800 mb-6">{userData ? 'Update User' : 'Create User'}</h2>
-                    <div>
-                        <Link to={"/user"} className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 transition">Back</Link>
-                    </div>
+                    <LinkButton route={"/user"} value={"Back"}/>
                 </div>
                 <form className="space-y-4" onSubmit={handleUserAction}>
                     <div>
-                        <label className="block text-stone-700 mb-1 text-sm" htmlFor="name">Full Name</label>
-                        <input type="text" value={name} id="name" name="name" onChange={(e) => setName(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter full name" />
+                        <Label value={"New Password"}/>
+                        <Input type={'text'} value={name} onChange={(e) => setName(e.target.value)} placeholder={'Enter full name'}/>
                     </div>
                     <div>
-                        <label className="block text-stone-700 mb-1 text-sm" htmlFor="email">Email</label>
-                        <input type="email" value={email} id="email" name="email" onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter email address" />
+                        <Label value={"Email"}/>
+                        <Input type={'email'} value={email} onChange={(e) => setEmail(e.target.value)} placeholder={'Enter email address'}/>
                     </div>
                     {!userData && ( 
                         <>
                             <div>
-                                <label className="block text-stone-700 mb-1 text-sm" htmlFor="password">Password</label>
-                                <input type="password" value={password} id="password" name="password" onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter password" />
+                                <Label value={"Password"}/>
+                                <Input type={'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={'Enter password'}/>
                             </div>
                             <div>
-                                <label className="block text-stone-700 mb-1 text-sm" htmlFor="confirm_password">Confirm Password</label>
-                                <input type="password" value={confirmPassword} id="confirm_password" name="password_confirmation" onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter confirm password" />
+                                <Label value={"Confirm Password"}/>
+                                <Input type={'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder={'Enter confirm password'}/>
                             </div>
                         </>
                     )}
-                    <div>
-                        <button type="submit" className="bg-stone-800 hover:bg-stone-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">{userData ? 'Update User' : 'Create User'}</button>
-                    </div>
+                    <Button value={userData ? 'Update User' : 'Create User'} />
                 </form>
             </div>
             <ToastContainer />

@@ -3,7 +3,15 @@ import Main from "../../components/layout/Main";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Api from "../../utils/api";
-import Spinner from "../../components/Spinner";
+import Spinner from "../../utils/Spinner";
+import LinkButton from "../../utils/LinkButton";
+import Table from "../../utils/Table/Table";
+import Thead from "../../utils/Table/Thead";
+import Tbody from "../../utils/Table/TBody";
+import Label from "../../utils/Label";
+import Input from "../../utils/Input";
+import Modal from "../../utils/Modal";
+import PaginationButton from "../../utils/PaginationButton";
 
 export default function User() {
     const [user, setUser] = useState([]);
@@ -61,104 +69,52 @@ export default function User() {
             
         }
     }
-
+    const columns = [
+        { key: "sno", label: "S.No" },
+        { key: "name", label: "Name" },
+        { key: "email", label: "Email" },
+        { key: "actions", label: "Action" },
+    ];
+    const actions = [
+        { icon: "fa-key", onClick: (user) => { setPasswordChange(true); setSelectedUser(user); } },
+        { icon: "fa-user-lock", to: "/user/assignpermission" },
+        { icon: "fa-user-shield", to: (user) => `/user/assignrole/${user.id}` },
+        { icon: "fa-pen-to-square", to: (user) => `/user/edit/${user.id}`, state: (user) => ({ user }) },
+        { icon: "fa-trash", onClick: (user) => handleDeleteUser(user.id) },
+    ];
+  
+    const tableData = user.map((user, index) => ({ ...user, sno: index + 1 }));
     useEffect(() => {
         getUser();
     }, [])
     return (
         <>
             {passwordChange && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-                        <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
-                            <h2 className="font-semibold mb-4 border-b border-stone-800 text-md pb-1">{selectedUser.name} Change Password</h2>
-                            <form onSubmit={newpasswordChange}>
-                                <input type="hidden" value={selectedUser.id} name="userId" onChange={(e)=>setUserId(e.target.value)}/>
-                                <div>
-                                    <label className="block text-stone-700 mb-1 text-sm" htmlFor="name">New Password</label>
-                                    <input type="text" id="password" name="password" onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 mb-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter new password" />
-                                </div>
-                                <div>
-                                    <label className="block text-stone-700 mb-1 text-sm" htmlFor="name">Confirm Password</label>
-                                    <input type="text" id="confirmPassword" name="confirmPassword"  onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-2 rounded-lg text-sm mt-1 mb-1 border border-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-500" placeholder="Enter confirm pasword" />
-                                </div>
-                                <div className="border-t border-stone-800 mt-4 gap-1 flex justify-between">
-                                    <button onClick={()=>setPasswordChange(false)} className="px-4 py-2 bg-stone-800 text-white rounded-lg hover:bg-stone-700 cursor-pointer mt-2 text-sm">Cancel</button>
-                                    <button className="px-4 py-2 bg-stone-800 text-white rounded-lg hover:bg-white-700 cursor-pointer mt-2 text-sm">Submit</button>
-                                </div>
-                            </form>
-                        </div>
+             <Modal title={`${selectedUser.name} Change Password`}  onSubmit={newpasswordChange} onClick={()=>setPasswordChange(false)}>
+                <input type="hidden" value={selectedUser.id} name="userId" onChange={(e)=>setUserId(e.target.value)}/>
+                <div>
+                    <Label value={"New Password"}/>
+                    <Input type={'password'} onChange={(e) => setPassword(e.target.value)} placeholder={'Enter new password'}/>
                 </div>
-            )}
+                <div>
+                    <Label value={"Confirm Password"}/>
+                    <Input type={'password'} onChange={(e) => setConfirmPassword(e.target.value)} placeholder={'Enter confirm pasword'}/>
+                </div>
+               </Modal>)}
             <Main>
-                <div className="flex justify-between">
-                    <h1 className="text-lg">Users</h1>
-                    <Link to="/user/create" className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 transition">
-                        + Create
-                    </Link>
+                <div className="flex justify-between mb-3">
+                    <h1 className="text-2xl font-bold text-stone-800">Users</h1>
+                    <LinkButton route={"/user/create"} value={"Create"} />
                 </div>
                {loading ? ( <Spinner/> )  :(
                 <div>
-                    <table className="w-full  border border-stone-200 shadow-md rounded-lg border-rounded">
-                        <thead className="bg-stone-800 text-white">
-                            <tr>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">
-                                    S.No
-                                </th>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">
-                                    Name
-                                </th>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">
-                                    Email
-                                </th>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-stone-200">
-                            {user.map((user, index) => (
-                                <tr key={user.id || index} className="hover:bg-stone-100 transition">
-                                    <td className="px-6 py-4  text-stone-700 text-xs ">
-                                        {index + 1}
-                                    </td>
-                                    <td className="px-6 py-4  text-stone-700 text-xs ">
-                                        {user.name}
-                                    </td>
-                                    <td className="px-6 py-4  text-stone-700 text-xs">
-                                        {user.email}
-                                    </td>
-                                    <td className="px-6 py-4 text-stone-700 flex space-x-3">
-                                        <div onClick={() => {setPasswordChange(true); setSelectedUser(user)}} className="cursor-pointer">
-                                            <i className="fa-solid fa-key text-md"></i>
-                                        </div>
-                                        <Link to="/user/assignpermission">
-                                            <i className="fa-solid fa-user-lock text-md"></i>
-                                        </Link>
-                                        <Link to={`/user/assignrole/${user.id}`}>
-                                            <i className="fa-solid fa-user-shield text-md"></i>
-                                        </Link>
-                                        <Link to={`/user/edit/${user.id}`} state={{ user }}>
-                                            <i className="fa-solid fa-pen-to-square text-md"></i>
-                                        </Link>
-                                        <div className="cursor-pointer" onClick={() => handleDeleteUser(user.id)}>
-                                            <i className="fa-solid fa-trash text-md"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="flex justify-end mt-3">
-                        <nav>
-                            <ul className="inline-flex text-sm gap-0.5">
-                                <li>
-                                    <button onClick={()=>prevPage && getUser(prevPage)} disabled={!prevPage} className={`px-3 rounded-l-lg h-8 ${prevPage ? "bg-stone-800 text-white hover:bg-stone-700" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}>Previous</button>
-                                </li>
-                                <li>
-                                    <button onClick={()=>nextPage && getUser(nextPage)} disabled={!nextPage} className={`px-3 rounded-r-lg h-8 ${nextPage ? "bg-stone-800 text-white hover:bg-stone-700" : "bg-stone-300 text-stone-500 cursor-not-allowed"}`}                                  >Next</button>
-                                </li>
-                            </ul>
-                        </nav>
+                    <Table>
+                        <Thead headings={columns.map(col => col.label)}/>    
+                        <Tbody data={tableData} columns={columns} actions={actions} />
+                    </Table>
+                    <div className="flex justify-end mt-3 gap-0.5">
+                       <PaginationButton onClick={()=>prevPage && getUser(prevPage)} disabled={!prevPage} condition={prevPage} value={"Previous"}/>
+                       <PaginationButton onClick={()=>nextPage && getUser(nextPage)} disabled={!nextPage} condition={nextPage} value={"Next"}/>
                     </div>
                 </div>
                )}

@@ -18,7 +18,7 @@ export default function Sidebar() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/users" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
+                        <Link to="/user" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
                             <i className="fa-solid fa-users text-sm"></i>
                             <span className="ms-3 text-xs">Users</span>
                         </Link>

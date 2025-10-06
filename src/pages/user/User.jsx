@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
-import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import Api from "../../utils/api";
+import { ToastContainer } from "react-toastify";
+import { useEffect, useReducer } from "react";
 import Spinner from "../../utils/Spinner";
 import LinkButton from "../../utils/LinkButton";
 import Table from "../../utils/Table/Table";
@@ -14,110 +13,73 @@ import PaginationButton from "../../utils/PaginationButton";
 import Td from "../../utils/Table/Td";
 import I from "../../utils/I";
 import Tbody from "../../utils/Table/TBody";
+import { userReducer, initialState } from "../../reducers/userReducer";
+import { changePasswordAction, deleteUserAction, getUserAction } from "../../actions/UserAction";
 
 export default function User() {
-    const [user, setUser] = useState([]);
-    const [nextPage, setNextPage] = useState(null);
-    const [prevPage, setPrevPage] = useState(null);
-    const [passwordChange, setPasswordChange] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(true);
-    const getUser = async (url = "/user") => {
-        try {
-            setLoading(true);
-            const res = await Api().get(url);
-            setUser(res.data.user.data);
-            setNextPage(res.data.user.next_page_url);
-            setPrevPage(res.data.user.prev_page_url);
-            setLoading(false);
-        } catch (error) {
-            console.log([error.response?.status, error.message]);
-        }
-    }
+    const [state, dispatch] = useReducer(userReducer, initialState);
+    const { user, nextPage, prevPage, passwordChange, selectedUser, password, confirmPassword, loading,} = state;
+    const getUser = (url) => getUserAction(dispatch,url);
+    const handleDeleteUser = (id) => deleteUserAction(dispatch,id,getUser);
+    const handlePasswordChange = async (e) => {  e.preventDefault(); changePasswordAction(dispatch,selectedUser,password,confirmPassword)};
 
-    const handleDeleteUser = async (id) => {
-        try {
-            setLoading(true);
-            const res = await Api().delete(`/user/${id}`);
-            res.data.message ? toast.success(res.data.message) : toast.error(res.data.error)
-            setLoading(false);
-            getUser();
-        } catch (err) {
-            console.log("Error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.message || "Something went wrong!")
-        }
-    }
-
-    const newpasswordChange = async (e) => {
-        e.preventDefault();
-        const userId = selectedUser.id;
-        console.log({ "User Id": userId, "Password": password, "Confirm Password": confirmPassword });
-        try {
-            const res = await Api().post(`/changePassword/${userId}`, { password, confirmPassword });
-            console.log({ "Message": res.data.message });
-            if (res.data.message) {
-                toast.success(res.data.message);
-                setPasswordChange(false);
-                setPassword("");
-                setConfirmPassword("");
-            } else {
-                toast.error(res.data.error)
-            }
-        } catch (err) {
-            console.log("Error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.message || "Something went wrong!")
-
-        }
-    }
     const columns = ["S.No", "Name", "Email", "Action"];
+
     useEffect(() => {
         getUser();
-    }, [])
+    }, []);
+
     return (
         <>
-            {passwordChange && (
-                <Modal title={`${selectedUser.name} Change Password`} onSubmit={newpasswordChange} onClick={() => setPasswordChange(false)}>
-                    <input type="hidden" value={selectedUser.id} name="userId" onChange={(e) => selectedUser(e.target.value)} />
+            {passwordChange && selectedUser && (
+                <Modal title={`${selectedUser.name} Change Password`} onSubmit={handlePasswordChange} onClick={() =>
+                    dispatch({ type: "TOGGLE_PASSWORD_MODAL", payload: { status: false, user: null }, })}>
+                    <input type="hidden" value={selectedUser.id} name="userId" readOnly />
                     <div>
                         <Label value={"New Password"} />
-                        <Input type={'password'} onChange={(e) => setPassword(e.target.value)} placeholder={'Enter new password'} />
+                        <Input type="password" onChange={(e) => dispatch({ type: "SET_PASSWORD", payload: e.target.value })} placeholder={"Enter new password"} />
                     </div>
                     <div>
                         <Label value={"Confirm Password"} />
-                        <Input type={'password'} onChange={(e) => setConfirmPassword(e.target.value)} placeholder={'Enter confirm pasword'} />
+                        <Input type="password" onChange={(e) => dispatch({ type: "SET_CONFIRM_PASSWORD", payload: e.target.value, })} placeholder={"Enter confirm password"} />
                     </div>
-                </Modal>)}
+                </Modal>
+            )}
+
             <Main>
                 <div className="flex justify-between mb-3">
                     <h1 className="text-2xl font-bold text-stone-800">Users</h1>
                     <LinkButton route={"/user/create"} value={"Create"} />
                 </div>
-                {loading ? (<Spinner />) : (
+
+                {loading ? (
+                    <Spinner />
+                ) : (
                     <div>
                         <Table>
                             <Thead headings={columns} />
                             <Tbody>
-                                {user.map((user, index) => (
-                                    <tr key={user.id || index} className="hover:bg-stone-100 transition">
+                                {user.map((item, index) => (
+                                    <tr key={item.id || index} className="hover:bg-stone-100 transition">
                                         <Td>{index + 1}</Td>
-                                        <Td>{user.name}</Td>
-                                        <Td>{user.email}</Td>
-                                        <Td flex={true} >
-                                            <div onClick={() => { setPasswordChange(true); setSelectedUser(user) }} className="cursor-pointer">
+                                        <Td>{item.name}</Td>
+                                        <Td>{item.email}</Td>
+                                        <Td flex={true}>
+                                            <div onClick={() =>
+                                                dispatch({ type: "TOGGLE_PASSWORD_MODAL", payload: { status: true, user: item }, })
+                                            } className="cursor-pointer">
                                                 <I value={"fa-key"} />
                                             </div>
                                             <Link to="/user/assignpermission">
                                                 <I value={"fa-user-lock"} />
                                             </Link>
-                                            <Link to={`/user/assignrole/${user.id}`}>
+                                            <Link to={`/user/assignrole/${item.id}`}>
                                                 <I value={"fa-user-shield"} />
                                             </Link>
-                                            <Link to={`/user/edit/${user.id}`} state={{ user }}>
+                                            <Link to={`/user/edit/${item.id}`} state={{ user: item }}>
                                                 <I value={"fa-pen-to-square"} />
                                             </Link>
-                                            <div className="cursor-pointer" onClick={() => handleDeleteUser(user.id)}>
+                                            <div className="cursor-pointer" onClick={() => handleDeleteUser(item.id)}>
                                                 <I value={"fa-trash"} />
                                             </div>
                                         </Td>
@@ -125,9 +87,12 @@ export default function User() {
                                 ))}
                             </Tbody>
                         </Table>
+
                         <div className="flex justify-end mt-3 gap-0.5">
-                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={prevPage} value={"Previous"} />
-                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={nextPage} value={"Next"} />
+                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={!!prevPage} value={"Previous"}
+                            />
+                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={!!nextPage} value={"Next"}
+                            />
                         </div>
                     </div>
                 )}

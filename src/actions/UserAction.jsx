@@ -1,4 +1,4 @@
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Api from "../utils/api";
 
 export const getUserAction = async (dispatch, url = "/user") => {
@@ -28,14 +28,14 @@ export const deleteUserAction = async (dispatch, id, getUser) => {
     }
 };
 
-export const changePasswordAction = async (dispatch,selectedUser,password,confirmPassword) => {
+export const changePasswordAction = async (dispatch, selectedUser, password, confirmPassword) => {
     const userId = selectedUser.id;
     try {
         const res = await Api().post(`/changePassword/${userId}`, { password, confirmPassword, });
         if (res.data.message) {
             toast.success(res.data.message);
             dispatch({ type: "TOGGLE_PASSWORD_MODAL", payload: { status: false, user: null }, });
-            dispatch({ type: "RESET_PASSWORD_FIELDS" });
+            dispatch({ type: "RESET_FIELDS", payload: [password, confirmPassword] });
         } else {
             toast.error(res.data.error);
         }
@@ -44,3 +44,25 @@ export const changePasswordAction = async (dispatch,selectedUser,password,confir
         toast.error(err.response?.data?.message || "Something went wrong!");
     }
 };
+
+
+export const createdUserAction = async (dispatch, name, email, password, confirmPassword) => {
+    try {
+        const res = await Api().post('/user', { name, email, password, confirmPassword });
+        res.data.message ? toast.success(res.data.message) : toast.error(res.data.error)
+        dispatch({ type: "ALL_FEILD_EMPTY" });
+    } catch (err) {
+        console.log("Error:", err.response?.data || err.message);
+        toast.error(err.response?.data?.message || "Something went wrong!");
+    }
+}
+
+export const updatedUserAction = async (userId,name,email) => {
+    try {
+        const res = await Api().patch(`/user/${userId}`, { name, email });
+        res.data.message ? toast.success(res.data.message) : toast.error(res.data.error)
+    } catch (err) {
+        console.log("Error:", err.response?.data || err.message);
+        toast.error(err.response?.data?.message || "Something went wrong!");
+    }
+}

@@ -21,7 +21,10 @@ export default function User() {
     const { user, nextPage, prevPage, passwordChange, selectedUser, password, confirmPassword, loading,} = state;
     const getUser = (url) => getUserAction(dispatch,url);
     const handleDeleteUser = (id) => deleteUserAction(dispatch,id,getUser);
-    const handlePasswordChange = async (e) => {  e.preventDefault(); changePasswordAction(dispatch,selectedUser,password,confirmPassword)};
+    const handlePasswordChange = async (e) => {  
+        e.preventDefault(); 
+        changePasswordAction(dispatch,selectedUser,password,confirmPassword)
+    };
 
     const columns = ["S.No", "Name", "Email", "Action"];
 
@@ -37,15 +40,14 @@ export default function User() {
                     <input type="hidden" value={selectedUser.id} name="userId" readOnly />
                     <div>
                         <Label value={"New Password"} />
-                        <Input type="password" onChange={(e) => dispatch({ type: "SET_PASSWORD", payload: e.target.value })} placeholder={"Enter new password"} />
+                        <Input type="password" onChange={(e) => dispatch({ type: "SET_FIELD", field: "password", payload: e.target.value })} placeholder={"Enter new password"} />
                     </div>
                     <div>
                         <Label value={"Confirm Password"} />
-                        <Input type="password" onChange={(e) => dispatch({ type: "SET_CONFIRM_PASSWORD", payload: e.target.value, })} placeholder={"Enter confirm password"} />
+                        <Input type="password" onChange={(e) => dispatch({ type: "SET_FIELD", field: "confirmPassword" , payload: e.target.value, })} placeholder={"Enter confirm password"} />
                     </div>
                 </Modal>
             )}
-
             <Main>
                 <div className="flex justify-between mb-3">
                     <h1 className="text-2xl font-bold text-stone-800">Users</h1>
@@ -89,10 +91,8 @@ export default function User() {
                         </Table>
 
                         <div className="flex justify-end mt-3 gap-0.5">
-                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={!!prevPage} value={"Previous"}
-                            />
-                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={!!nextPage} value={"Next"}
-                            />
+                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={!!prevPage} value={"Previous"}/>
+                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={!!nextPage} value={"Next"}/>
                         </div>
                     </div>
                 )}

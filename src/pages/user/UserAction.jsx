@@ -11,7 +11,7 @@ import { createdUserAction, updatedUserAction } from "../../actions/UserAction";
 export default function UserAction() {
 
     const location = useLocation();
-    const userData = location.state?.user;
+    const userData = location.state?.user;      
     const navigate = useNavigate();
 
     const [state, dispatch] = useReducer(userReducer, initialState);

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
 import { ToastContainer } from "react-toastify";
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import Spinner from "../../utils/Spinner";
 import LinkButton from "../../utils/LinkButton";
 import Table from "../../utils/Table/Table";
@@ -11,6 +11,7 @@ import Input from "../../utils/Input";
 import Modal from "../../utils/Modal";
 import PaginationButton from "../../utils/PaginationButton";
 import Td from "../../utils/Table/Td";
+import Tr from "../../utils/Table/Tr";
 import I from "../../utils/I";
 import Tbody from "../../utils/Table/TBody";
 import { userReducer, initialState } from "../../reducers/userReducer";
@@ -19,7 +20,7 @@ import { changePasswordAction, deleteUserAction, getUserAction } from "../../act
 export default function User() {
     const [state, dispatch] = useReducer(userReducer, initialState);
     const { user, nextPage, prevPage, passwordChange, selectedUser, password, confirmPassword, loading,} = state;
-    const getUser = (url) => getUserAction(dispatch,url);
+    const getUser = useCallback( (url) =>  getUserAction(dispatch,url),[dispatch]);
     const handleDeleteUser = (id) => deleteUserAction(dispatch,id,getUser);
     const handlePasswordChange = async (e) => {  
         e.preventDefault(); 
@@ -62,7 +63,7 @@ export default function User() {
                             <Thead headings={columns} />
                             <Tbody>
                                 {user.map((item, index) => (
-                                    <tr key={item.id || index} className="hover:bg-stone-100 transition">
+                                    <Tr key={item.id || index}>
                                         <Td>{index + 1}</Td>
                                         <Td>{item.name}</Td>
                                         <Td>{item.email}</Td>
@@ -85,7 +86,7 @@ export default function User() {
                                                 <I value={"fa-trash"} />
                                             </div>
                                         </Td>
-                                    </tr>
+                                    </Tr>
                                 ))}
                             </Tbody>
                         </Table>

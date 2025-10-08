@@ -1,59 +1,78 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
+import Api from "../../utils/api";
+import { useCallback, useEffect, useState } from "react";
+import I from "../../utils/I";
+import Td from "../../utils/Table/Td";
+import Tr from "../../utils/Table/Tr";
+import Table from "../../utils/Table/Table";
+import LinkButton from "../../utils/LinkButton";
+import Thead from "../../utils/Table/Thead";
+import Tbody from "../../utils/Table/TBody";
+import Spinner from "../../utils/Spinner";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Role() {
 
-    
-    const roles = [
-        {
-            name : 'Abubakar',
-            email : 'Abubakar192005@gmail.com'
-        },
-        {
-            name : 'Aamir',
-            email : 'Aamir@gmail.com'
+    const [role, setRole] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const getRole = useCallback(async () => {
+        const res = await Api().get('/role');
+        setRole(res.data.roles)
+        setLoading(false)
+    }, [])
+
+    useEffect(() => {
+        setLoading(true)
+        getRole();
+    }, [getRole]);
+
+    const handleRoleDelete = async (id) => {
+        try {
+            setLoading(true);
+            const res = await Api().delete(`/role/${id}`);
+            toast.success(res.data.message);
+            getRole();  
+        } catch (err) {
+            console.log("Error:", err.response?.data || err.message);
+            toast.error(err.response?.data?.message || "Something went wrong!");
         }
-    ]
-    
+    }
+
+    const columns = ['Name', 'Action'];
     return (
         <>
-            <Main>  
-                <div className="flex justify-between">
-                    <h1 className="text-lg">
-                        Users
-                    </h1>
-                    <Link to="/user/create" className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 transition">
-                        + Create
-                    </Link>
+            <Main>
+                <div className="flex justify-between mb-3">
+                    <h1 className="text-2xl font-bold text-stone-800">Roles</h1>
+                    <LinkButton value={"Create"} route={"/role/create"} />
                 </div>
                 <div>
-                    <table className="w-full  border border-gray-200 shadow-md rounded-lg border-rounded">
-                        <thead className="bg-stone-800 text-white">
-                            <tr>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">Name</th>
-                                    <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {roles.map((role) => (
-                            <tr className="hover:bg-gray-100 transition">
-                                <td className="px-6 py-4  text-gray-700 text-xs ">{role.name}</td>
-                                <td className="px-6 py-4 text-gray-700 flex space-x-3">
-                                    <Link to="/user/assignpermission" >
-                                        <i className="fa-solid fa-key text-md"></i>
-                                    </Link>
-                                    <Link to="/user/edit" >
-                                        <i className="fa-solid fa-pen-to-square text-md"></i>
-                                    </Link>
-                                    <Link to="/user/delete" >
-                                        <i className="fa-solid fa-trash text-md"></i>
-                                    </Link>
-                                </td>
-                            </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {loading ? <Spinner /> :
+                        <Table>
+                            <Thead headings={columns} />
+                            <Tbody>
+                                {role.map((role, index) => (
+                                    <Tr key={role.id || index}>
+                                        <Td>{role.name}</Td>
+                                        <Td flex={true}>
+                                            <Link to="/user/assignpermission" >
+                                                <I value={"fa-key"} />
+                                            </Link>
+                                            <Link to={`/role/edit/${role.id}`} state={{role:role}}>
+                                                <I value={"fa-pen-to-square"} />
+                                            </Link>
+                                            <div className="cursor-pointer" onClick={() => handleRoleDelete(role.id)}>
+                                                <I value={"fa-trash"} />
+                                            </div>
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    }
                 </div>
+                <ToastContainer />
             </Main>
         </>
     );

@@ -1,49 +1,75 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
+import Api from "../../utils/api";
+import { useCallback, useEffect, useState } from "react";
+import I from "../../utils/I";
+import Td from "../../utils/Table/Td";
+import Tr from "../../utils/Table/Tr";
+import Table from "../../utils/Table/Table";
+import LinkButton from "../../utils/LinkButton";
+import Thead from "../../utils/Table/Thead";
+import Tbody from "../../utils/Table/TBody";
+import Spinner from "../../utils/Spinner";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Permission() {
+
+    const [permission, setPermission] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const getPermission = useCallback(async () => {
+        const res = await Api().get('/permission');
+        setPermission(res.data.permissions)
+        setLoading(false)
+    }, [])
+
+    useEffect(() => {
+        setLoading(true)
+        getPermission();
+    }, [getPermission]);
+
+    const handleRoleDelete = async (id) => {
+        try {
+            setLoading(true);
+            const res = await Api().delete(`/permission/${id}`);
+            toast.success(res.data.message);
+            getPermission();  
+        } catch (err) {
+            console.log("Error:", err.response?.data || err.message);
+            toast.error(err.response?.data?.message || "Something went wrong!");
+        }
+    }
+
+    const columns = ['Name', 'Action'];
     return (
         <>
             <Main>
-                <div className="flex justify-between">
-                    <h1 className="text-2xl">
-                        Users
-                    </h1>
-                    <Link to="/user/create" className="text-white bg-stone-800 hover:bg-stone-700 focus:ring-4 focus:ring-stone-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 transition">
-                        + Create
-                    </Link>
+                <div className="flex justify-between mb-3">
+                    <h1 className="text-2xl font-bold text-stone-800">Permissions</h1>
+                    <LinkButton value={"Create"} route={"/permission/create"} />
                 </div>
                 <div>
-                    <table className="w-full  border border-gray-200 shadow-md rounded-lg border-rounded">
-                        <thead className="bg-stone-800 text-white">
-                            <tr>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider">Name</th>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider">Email</th>
-                                <th className="px-6 py-3 text-left font-semibold uppercase tracking-wider">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            <tr className="hover:bg-gray-100 transition">
-                                <td className="px-6 py-4  text-gray-700 ">Abubakar</td>
-                                <td className="px-6 py-4  text-gray-700">Abubakar192005@gmail.com</td>
-                                <td className="px-6 py-4 text-gray-700 flex space-x-3">
-                                    <Link to="/user/assignpermission" >
-                                        <i className="fa-solid fa-key text-xl"></i>
-                                    </Link>
-                                    <Link to="/user/assignrole" >
-                                        <i className="fa-solid fa-user-shield text-xl"></i>
-                                    </Link>
-                                    <Link to="/user/edit" >
-                                        <i className="fa-solid fa-pen-to-square text-xl"></i>
-                                    </Link>
-                                    <Link to="/user/delete" >
-                                        <i className="fa-solid fa-trash text-xl"></i>
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {loading ? <Spinner /> :
+                        <Table>
+                            <Thead headings={columns} />
+                            <Tbody>
+                                {permission.map((permission, index) => (
+                                    <Tr key={permission.id || index}>
+                                        <Td>{permission.name}</Td>
+                                        <Td flex={true}>
+                                            <Link to="/user/edit" >
+                                                <I value={"fa-pen-to-square"} />
+                                            </Link>
+                                            <div className="cursor-pointer" onClick={() => handleRoleDelete(permission.id)}>
+                                                <I value={"fa-trash"} />
+                                            </div>
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    }
                 </div>
+                <ToastContainer />
             </Main>
         </>
     );

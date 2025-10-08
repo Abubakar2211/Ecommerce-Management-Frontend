@@ -24,13 +24,13 @@ export default function Sidebar() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/roles" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
+                        <Link to="/role" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
                             <i className="fa-solid fa-user-shield text-sm"></i>
                             <span className="ms-3 text-xs">Roles</span>
                         </Link>
                     </li>
                     <li>
-                        <Link to="/permissions" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
+                        <Link to="/permission" className="flex items-center p-2 text-white rounded-lg hover:bg-stone-700 group">
                                 <i className="fa-solid fa-key text-sm"></i>
                             <span className="ms-3 text-xs">Permissions</span>
                         </Link>

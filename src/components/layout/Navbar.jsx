@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import Api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 
@@ -6,7 +5,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const logoutButton = async () => {
     try {
-      const res = await Api().post("/logout");
+      await Api().post("/logout");
       localStorage.removeItem("authToken");
       navigate("/");
     } catch (err) {

@@ -1,43 +1,37 @@
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Main from "../../components/layout/Main";
 import Button from "../../utils/Button";
 import Input from "../../utils/Input";
 import Label from "../../utils/Label";
 import LinkButton from "../../utils/LinkButton";
-import { useEffect, useState } from "react";
-import Api from "../../utils/api";
-import { useLocation } from "react-router-dom";
+import { useEffect, useReducer } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { initialState, reducer } from "../../reducers/RoleReducer";
+import { createRoleAction, updateRoleAction } from "../../actions/RoleAction";
 
 export default function RoleAction() {
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { roleId, name } = state;
     const location = useLocation();
     const roleData = location.state?.role;
-    console.log(roleData);
-    const [name, setName] = useState("");
-    const [roleId, setRoleId] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (roleData) {
-            setRoleId(roleData.id);
-            setName(roleData.name || "");
+            dispatch({ type: "SET_FIELDS", payload: { roleId: roleData.id, name: roleData.name || "" } })
         }
-        console.log("Role Data:", roleData);
     }, [roleData]);
 
-    const CreateRole = () => {
-        
-    }
     const handleRoleAction = async (e) => {
         e.preventDefault();
-        try {
-            const res = await Api().post('/role', { name });
-            toast.success(res.data.message);
-            setName("");
-        } catch (err) {
-            console.log("Error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.message || "Something went wrong!");
+        if (roleData) {
+            updateRoleAction(dispatch,roleId,name);
+            navigate('/role');
+        } else {
+            createRoleAction(dispatch,name);
         }
     };
-
 
     return (
         <Main>
@@ -49,7 +43,8 @@ export default function RoleAction() {
                 <form className="space-y-4" onSubmit={handleRoleAction}>
                     <div>
                         <Label value={"Role Name"} />
-                        <Input type={'text'} value={roleData?.name || name} onChange={(e) => setName(e.target.value)} placeholder={'Enter role name'} />
+                        <Input type={'text'} value={name} 
+                        onChange={(e) => dispatch({ type: "SET_FIELDS", payload: { name: e.target.value } })} placeholder={'Enter role name'} />
                     </div>
                     <Button value={roleData ? "Update Role" : "Create Role"} />
                 </form>
@@ -57,5 +52,4 @@ export default function RoleAction() {
             <ToastContainer />
         </Main>
     );
-
 }

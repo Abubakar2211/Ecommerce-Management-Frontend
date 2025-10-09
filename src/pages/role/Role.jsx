@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Main from "../../components/layout/Main";
-import Api from "../../utils/api";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import I from "../../utils/I";
 import Td from "../../utils/Table/Td";
 import Tr from "../../utils/Table/Tr";
@@ -10,36 +9,23 @@ import LinkButton from "../../utils/LinkButton";
 import Thead from "../../utils/Table/Thead";
 import Tbody from "../../utils/Table/TBody";
 import Spinner from "../../utils/Spinner";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { reducer, initialState } from "../../reducers/RoleReducer";
+import { deleteRoleAction, getRoleAction } from "../../actions/RoleAction";
+
 
 export default function Role() {
 
-    const [role, setRole] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const getRole = useCallback(async () => {
-        const res = await Api().get('/role');
-        setRole(res.data.roles)
-        setLoading(false)
-    }, [])
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { role, loading } = state;
+    const getRole = useCallback(() => getRoleAction(dispatch), [dispatch])
+    const handleRoleDelete = (id) => deleteRoleAction(dispatch, id, getRole)
+    const columns = ['Name', 'Action'];
 
     useEffect(() => {
-        setLoading(true)
         getRole();
     }, [getRole]);
 
-    const handleRoleDelete = async (id) => {
-        try {
-            setLoading(true);
-            const res = await Api().delete(`/role/${id}`);
-            toast.success(res.data.message);
-            getRole();  
-        } catch (err) {
-            console.log("Error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.message || "Something went wrong!");
-        }
-    }
-
-    const columns = ['Name', 'Action'];
     return (
         <>
             <Main>
@@ -59,7 +45,7 @@ export default function Role() {
                                             <Link to="/user/assignpermission" >
                                                 <I value={"fa-key"} />
                                             </Link>
-                                            <Link to={`/role/edit/${role.id}`} state={{role:role}}>
+                                            <Link to={`/role/edit/${role.id}`} state={{ role: role }}>
                                                 <I value={"fa-pen-to-square"} />
                                             </Link>
                                             <div className="cursor-pointer" onClick={() => handleRoleDelete(role.id)}>

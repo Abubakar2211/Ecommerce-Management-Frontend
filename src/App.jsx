@@ -25,7 +25,7 @@ function App() {
           <Route path="/role/edit/:id" element={<RoleAction />} />
           <Route path="/permission" element={<Permission />} />
           <Route path="/permission/create" element={<PermissionAction />} /> 
-          <Route path="/permission/edit:id" element={<PermissionAction />} /> 
+          <Route path="/permission/edit/:id" element={<PermissionAction />} /> 
         </Route >
       </Routes>
     </>

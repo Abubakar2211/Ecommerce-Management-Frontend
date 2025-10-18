@@ -56,7 +56,7 @@ export default function Permission() {
                                     <Tr key={permission.id || index}>
                                         <Td>{permission.name}</Td>
                                         <Td flex={true}>
-                                            <Link to="/user/edit" >
+                                            <Link to={`/permission/edit/${permission.id}`} state={{permission:permission}}>
                                                 <I value={"fa-pen-to-square"} />
                                             </Link>
                                             <div className="cursor-pointer" onClick={() => handleRoleDelete(permission.id)}>

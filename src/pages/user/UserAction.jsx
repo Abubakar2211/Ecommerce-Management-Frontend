@@ -29,7 +29,7 @@ export default function UserAction() {
         if (userId) {
             updatedUserAction(dispatch,userId,name,email); navigate('/user');
         } else {
-            createdUserAction(dispatch,userId,name,email,password,confirmPassword);
+            createdUserAction(dispatch,name,email,password,confirmPassword);
         }
     }
 

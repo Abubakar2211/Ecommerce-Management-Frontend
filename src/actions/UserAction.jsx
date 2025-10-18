@@ -48,7 +48,7 @@ export const changePasswordAction = async (dispatch, selectedUser, password, con
 
 export const createdUserAction = async (dispatch, name, email, password, confirmPassword) => {
     try {
-        const res = await Api().post('/user', { name, email, password, confirmPassword });
+        const res = await Api().post('/user', { name, email, password, password_confirmation:confirmPassword });
         res.data.message ? toast.success(res.data.message) : toast.error(res.data.error)
         dispatch({ type: "ALL_FEILD_EMPTY" });
     } catch (err) {

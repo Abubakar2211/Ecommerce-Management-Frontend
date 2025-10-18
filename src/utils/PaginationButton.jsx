@@ -9,9 +9,9 @@ export default function PaginationButton({
       <button
         onClick={onClick}
         disabled={disabled}
-        className={`px-3 rounded-lg h-8 text-xs ${
+        className={`px-3 rounded-md h-8 w-18 text-xs ${
           condition
-            ? "bg-stone-800 text-white hover:bg-stone-700"
+            ? "bg-blue-500 text-white hover:bg-blue-70 cursor-pointer transition-all duration-300 ease-in-out"
             : "bg-stone-300 text-stone-500 cursor-not-allowed"
         }`}
       >

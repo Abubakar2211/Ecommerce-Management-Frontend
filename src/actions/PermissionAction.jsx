@@ -1,11 +1,11 @@
 import { toast } from "react-toastify";
 import Api from "../utils/api";
 
-export const getRoleAction = async (dispatch) => {
+export const getPermissionAction = async (dispatch) => {
     try {
         dispatch({ type: "SET_LOADING", payload: true });
-        const res = await Api().get('/role');
-        dispatch({ type: "SET_ROLES", payload: { data: res.data.roles } });
+        const res = await Api().get('/permission');
+        dispatch({ type: "SET_PERMISSIONS", payload: { data: res.data.permissions } });
     } catch (err) {
         console.log("Error:", err.response?.data || err.message);
         toast.error(err.response?.data?.message || "Something went wrong!");
@@ -13,12 +13,12 @@ export const getRoleAction = async (dispatch) => {
     }
 }
 
-export const deleteRoleAction = async (dispatch, id, getRole) => {
+export const deletePermissionAction = async (dispatch, id, getPermission) => {
     try {
         dispatch({ type: "SET_LOADING", payload: true });
-        const res = await Api().delete(`/role/${id}`);
+        const res = await Api().delete(`/permission/${id}`);
         toast.success(res.data.message);
-        getRole();
+        getPermission();
     } catch (err) {
         console.log("Error:", err.response?.data || err.message);
         toast.error(err.response?.data?.message || "Something went wrong!");
@@ -26,9 +26,9 @@ export const deleteRoleAction = async (dispatch, id, getRole) => {
     }
 }
 
-export const createRoleAction = async (dispatch,name) => {
+export const createPermissionAction = async (dispatch,name) => {
     try {
-        const res = await Api().post('/role', { name });
+        const res = await Api().post('/permission', { name });
         toast.success(res.data.message);
         dispatch({ type: "RESET_FIELD" })
     } catch (err) {
@@ -36,9 +36,9 @@ export const createRoleAction = async (dispatch,name) => {
         toast.error(err.response?.data?.message || "Something went wrong!");
     }
 }
-export const updateRoleAction = async (dispatch,roleId,name) => {
+export const updatePermissionAction = async (dispatch,permissionId,name) => {
     try {
-        const res = await Api().patch(`/role/${roleId}`, { name });
+        const res = await Api().patch(`/permission/${permissionId}`, { name });
         toast.success(res.data.message);
         dispatch({ type: "RESET_FIELD" })
     } catch (err) {

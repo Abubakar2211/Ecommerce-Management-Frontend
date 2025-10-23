@@ -66,3 +66,15 @@ export const updatedUserAction = async (userId,name,email) => {
         toast.error(err.response?.data?.message || "Something went wrong!");
     }
 }
+
+export const getRolesAction = async (dispatch, url = "/role") => {
+    try {
+        const res = await Api().get(url);
+        dispatch({
+            type: "SET_ROLES",
+            payload: { data: res.data.roles },
+        });
+    } catch (error) {
+        console.log([error.response?.status, error.message]);
+    }
+};

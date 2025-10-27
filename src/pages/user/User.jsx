@@ -14,27 +14,33 @@ import Td from "../../utils/Table/Td";
 import Tr from "../../utils/Table/Tr";
 import I from "../../utils/I";
 import Tbody from "../../utils/Table/TBody";
-import {togglePasswordModal,toggleAssignRoleModal,toggleAssignPermissionModal,setFields} from "../../store/slices/userSlice"; "../../store/slices/userSlice.js";
-import { changePasswordAction, deleteUserAction, getUserAction } from "../../actions/UserAction";
+import { togglePasswordModal, toggleAssignRoleModal, toggleAssignPermissionModal, setFields } from "../../store/slices/userSlice";
+import { changePasswordAction, deleteUserAction, getPermissions, getRoles, getUserAction } from "../../actions/UserAction";
 import { useDispatch, useSelector } from "react-redux";
+import Api from "../../utils/api";
 
 export default function User() {
     const dispatch = useDispatch();
-    const { user, nextPage, prevPage, passwordChange, selectedUser, password, confirmPassword, loading} = useSelector((state) => state.user);
-    const getUser = useCallback( (url) =>  getUserAction(dispatch,url),[dispatch]);
-    const handleDeleteUser = (id) => deleteUserAction(dispatch,id,getUser);
-    const handlePasswordChange = async (e) => {  
-        e.preventDefault(); 
-        changePasswordAction(dispatch,selectedUser,password,confirmPassword)
+    const { user, nextPage, prevPage, passwordChange, selectedUser, password, confirmPassword, loading, assignPermission, assignRole, roles, permissions } = useSelector((state) => state.user);
+    const getUser = useCallback((url) => getUserAction(dispatch, url), [dispatch]);
+    const handleDeleteUser = (id) => deleteUserAction(dispatch, id, getUser);
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        changePasswordAction(dispatch, selectedUser, password, confirmPassword)
     };
-
-    // const getRoles = getRolesAction(dispta)
     const columns = ["S.No", "Name", "Email", "Action"];
-
+    const handlegetRoles = async (e) => {
+        e.preventDefault();
+        getRoles(dispatch); 
+    }
+    const handlegetPermissions = async (e) => {
+        e.preventDefault();
+        getPermissions(dispatch); 
+    }
     useEffect(() => {
         getUser();
     }, []);
-  
+
     return (
         <>
             {passwordChange && selectedUser && (
@@ -43,7 +49,7 @@ export default function User() {
                     <input type="hidden" value={selectedUser.id} name="userId" readOnly />
                     <div>
                         <Label value={"New Password"} />
-                        <Input type="password" onChange={(e) => dispatch(setFields({password: e.target.value }))} placeholder={"Enter new password"} />
+                        <Input type="password" onChange={(e) => dispatch(setFields({ password: e.target.value }))} placeholder={"Enter new password"} />
                     </div>
                     <div>
                         <Label value={"Confirm Password"} />
@@ -51,7 +57,37 @@ export default function User() {
                     </div>
                 </Modal>
             )}
-            
+
+            {assignRole && selectedUser && (
+                <Modal title={`${selectedUser.name} Assign Role`} onSubmit={handlegetRoles}
+                    onClick={() => dispatch(toggleAssignRoleModal({ status: false, user: null }))}>
+                    <input type="hidden" value={selectedUser.id} name="userId" readOnly />
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                        {roles.map((role) => (
+                            <div key={role.id} className="flex items-center gap-2">
+                                <input type="checkbox" name="roles[]" value={role.name} className="cursor-pointer" />
+                                <label className="text-xs font-medium text-gray-800">{role.name}</label>
+                            </div>
+                        ))}
+                    </div>
+                </Modal>
+            )}
+
+            {assignPermission && selectedUser && (
+                <Modal title={`${selectedUser.name} Assign Permission`} onSubmit={handlegetPermissions} onClick={() =>
+                    dispatch(toggleAssignPermissionModal({ status: false, user: null }))}>
+                    <input type="hidden" value={selectedUser.id} name="userId" readOnly />
+                    <div className="grid grid-cols-3 gap-4 mt-3">
+                        {permissions.map((permission) => (
+                            <div key={permission.id} className="flex items-center gap-2">
+                                <input type="checkbox" name="permissions[]" value={permission.name} className="cursor-pointer" />
+                                <label className="text-xs font-medium text-gray-800">{permission.name}</label>
+                            </div>
+                        ))}
+                    </div>
+                </Modal>
+            )}
+
 
             <Main>
                 <div className="flex justify-between mb-3">
@@ -77,15 +113,17 @@ export default function User() {
                                             } className="cursor-pointer">
                                                 <I value={"fa-key"} />
                                             </div>
-                                            <div onClick={() =>
-                                                dispatch(toggleAssignRoleModal({ status: true, user: item }))
-                                            } className="cursor-pointer">
+                                            <div onClick={(e) => {
+                                                dispatch(toggleAssignRoleModal({ status: true, user: item }));
+                                                handlegetRoles(e);
+                                            }} className="cursor-pointer">
                                                 <I value={"fa-user-lock"} />
                                             </div>
-                                            <div onClick={() =>
+                                            <div onClick={(e) => {
                                                 dispatch(toggleAssignPermissionModal({ status: true, user: item }))
-                                            } className="cursor-pointer">
-                                               <I value={"fa-user-shield"} />
+                                                handlegetPermissions(e);
+                                            }} className="cursor-pointer">
+                                                <I value={"fa-user-shield"} />
                                             </div>
                                             <Link to={`/user/edit/${item.id}`} state={{ user: item }}>
                                                 <I value={"fa-pen-to-square"} />
@@ -100,8 +138,8 @@ export default function User() {
                         </Table>
 
                         <div className="flex justify-end mt-3 gap-0.5">
-                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={!!prevPage} value={"Previous"}/>
-                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={!!nextPage} value={"Next"}/>
+                            <PaginationButton onClick={() => prevPage && getUser(prevPage)} disabled={!prevPage} condition={!!prevPage} value={"Previous"} />
+                            <PaginationButton onClick={() => nextPage && getUser(nextPage)} disabled={!nextPage} condition={!!nextPage} value={"Next"} />
                         </div>
                     </div>
                 )}

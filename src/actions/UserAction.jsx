@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import Api from "../utils/api";
-import { resetFields, setLoading, setUsers, togglePasswordModal } from "../store/slices/userSlice";
+import { resetFields, setLoading, setPermissions, setRoles, setUsers, togglePasswordModal } from "../store/slices/userSlice";
 import { handleApiError, handleApiResponse } from "../utils/js/apiHelpers";
 
 export const getUserAction = async (dispatch, url = "/user") => {
@@ -65,3 +65,20 @@ export const updatedUserAction = async (userId, name, email) => {
     }
 }
 
+export const getRoles = async (dispatch) => {
+    try {
+        const roles = await Api().get('/role');
+        dispatch(setRoles({ data: roles.data.roles }));
+    } catch (err) {
+        handleApiError(err);
+    }
+}
+
+export const getPermissions = async (dispatch) => {
+    try {
+        const permissions = await Api().get('/permission');
+        dispatch(setPermissions({ data: permissions.data.permissions }));
+    } catch (err) {
+        handleApiError(err);
+    }
+}

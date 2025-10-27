@@ -14,7 +14,8 @@ export const initialState = {
     userId: "",
     name: "",
     email: "",
-    roles: []
+    roles: [],
+    permissions:[],
 };
 
 const userSlice = createSlice({
@@ -53,12 +54,15 @@ const userSlice = createSlice({
         setRoles: (state, action) => {
             state.roles = action.payload.data;
         },
+        setPermissions: (state, action) => {
+            state.permissions = action.payload.data;
+        },
     }
 });
 
 export const {
     setUsers,setLoading,togglePasswordModal,toggleAssignRoleModal,
-    toggleAssignPermissionModal,setField,setFields,resetFields,setRoles
+    toggleAssignPermissionModal,setField,setFields,resetFields,setRoles,setPermissions
 } = userSlice.actions;
 
 export default userSlice.reducer;

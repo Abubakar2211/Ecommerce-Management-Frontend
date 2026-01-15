@@ -9,6 +9,7 @@ import UserAction from "./pages/user/UserAction";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleAction from "./pages/role/RoleAction";
 import PermissionAction from "./pages/permission/PermissionAction";
+import Order from "./pages/order/Order";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/permission" element={<Permission />} />
           <Route path="/permission/create" element={<PermissionAction />} /> 
           <Route path="/permission/edit/:id" element={<PermissionAction />} /> 
+          <Route path="/order" element={<Order />} /> 
         </Route >
       </Routes>
     </>

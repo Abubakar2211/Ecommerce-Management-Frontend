@@ -11,6 +11,7 @@ import RoleAction from "./pages/role/RoleAction";
 import PermissionAction from "./pages/permission/PermissionAction";
 import Order from "./pages/order/Order";
 import OrderForm from "./pages/order/OrderForm";
+import Product from "./pages/product/product";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/order" element={<Order />} /> 
           <Route path="/order/create" element={<OrderForm />} /> 
           <Route path="/order/edit/:id" element={<OrderForm />} /> 
+          <Route path="/product" element={<Product />} /> 
         </Route >
       </Routes>
     </>

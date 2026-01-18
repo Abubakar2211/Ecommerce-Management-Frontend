@@ -28,8 +28,8 @@ export default function Permission() {
     return (
         <>
             <Main>
-                <div className="flex justify-between mb-3">
-                    <h1 className="text-2xl font-bold text-stone-800">Roles</h1>
+                <div className="flex justify-between    mb-3">
+                    <h1 className="text-2xl font-bold text-stone-800">Orders</h1>
                     <LinkButton value={"Create"} route={"/order/create"} />
                 </div>
                 <div>

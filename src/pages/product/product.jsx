@@ -9,40 +9,53 @@ import Td from "../../utils/Table/Td";
 import I from "../../utils/I";
 import { useEffect } from "react";
 import { fetchProduct } from "../../actions/ProductAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Spinner from "../../utils/Spinner";
 
 export default function Product() {
-    const columns = ["Status", "Total Price", "Action"];
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(fetchProduct());
-    },[dispatch]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchProduct());
+  }, [dispatch]);
+  const { products = [], loading = false } = useSelector((state) => state.product) || {};
+  const columns = ["Name","Price","Stock","Category","Subcategory","Brand","Created", "Action"];
 
-    return (
-        <>
-            <Main>
-                <div className="flex justify-between mb-3">
-                    <h1 className="text-2xl font-bold text-stone-800">Product</h1>
-                    <LinkButton value={"Create"} route={"/product/create"} />
-                </div>
-                <div>
-                    <Table>
-                        <Thead headings={columns} />
-                        <Tbody>
-                            <Tr>
-                                <Td>Hello</Td>
-                                <Td></Td>
-                                <Td flex={true}>
-                                    <div className="cursor-pointer">
-                                        <I value={"fa-trash"} />
-                                    </div>
-                                </Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
-                </div>
-                <ToastContainer />
-            </Main>
-        </>
-    );
+  return (
+    <>
+      <Main>
+        <div className="flex justify-between mb-3">
+          <h1 className="text-2xl font-bold text-stone-800">Products</h1>
+          <LinkButton value={"Create"} route={"/product/create"} />
+        </div>
+        <div>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <Table>
+              <Thead headings={columns} />
+              <Tbody>
+                {products.map((product, index) => (
+                  <Tr key={product.id || index}>
+                    <Td>{product.name}</Td>
+                    <Td>{product.price}</Td>
+                    <Td>{product.stock}</Td>
+                    <Td>{product.category}</Td>
+                    <Td>{product.subcategory}</Td>
+                    <Td>{product.brand}</Td>
+                    <Td>{new Date(product.created_at).toLocaleDateString()}</Td>
+                    <Td flex={true}>
+                      <div className="cursor-pointer">
+                        <I value={"fa-trash"} />
+                      </div>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
+        </div>
+        <ToastContainer />
+      </Main>
+    </>
+  );
 }

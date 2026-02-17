@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 
 export default function Sidebar() {
-  const location = useLocation(); 
+  const location = useLocation();
   const currentPath = location.pathname;
 
   return (
@@ -79,10 +79,22 @@ export default function Sidebar() {
                   : "bg-gray-100 hover:bg-blue-500 hover:text-white"
               }`}
             >
-              {/* <i className="fa-solid fa-key text-sm"></i> */}
-              {/* <i className="fa-solid fa-box text-sm"></i> */}
               <i className="fa-solid fa-list text-sm"></i>
               <span className="ms-3 text-xs">Order</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/product"
+              className={`flex items-center px-2 py-3 rounded-md transition-all duration-300 ease-in-out ${
+                currentPath === "/product"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 hover:bg-blue-500 hover:text-white"
+              }`}
+            >
+              <i className="fa-solid fa-cart-shopping text-sm"></i>
+              <span className="ms-3 text-xs">Product</span>
             </Link>
           </li>
         </ul>

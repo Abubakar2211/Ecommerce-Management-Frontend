@@ -16,6 +16,22 @@ export const fetchOrders = createAsyncThunk(
     }
 )
 
+export const createOrders = createAsyncThunk(
+    "order/createOrders",
+    async (_, { rejectWithValue }) => {
+        try{
+            const response = await Api().post("/order");
+            console.log(response.data.orders);
+            return response.data.orders;
+        }catch(error){
+            handleApiError(error);
+            return rejectWithValue(error.response.data || "Something went wrong!")
+        }
+    }
+)
+
+
+
 export const editOrder = createAsyncThunk(
     "order/editOrder",
     async(orderId, {rejectWithValue}) => {

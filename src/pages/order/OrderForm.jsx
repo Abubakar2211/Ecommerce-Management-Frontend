@@ -38,7 +38,7 @@ export default function OrderForm() {
             <div className=" bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between">
                     <h2 className="text-2xl font-bold text-stone-800 mb-6">{roleData ? "Update Order" : "Create Order"}</h2>
-                    <LinkButton route={"/role"} value={"Back"} />
+                    <LinkButton route={"/order"} value={"Back"} />
                 </div>
                 <form className="space-y-4" onSubmit={handleRoleAction}>
                     <div>
@@ -46,7 +46,7 @@ export default function OrderForm() {
                         <Input type={'text'} value={name} 
                         onChange={(e) => dispatch({ type: "SET_FIELDS", payload: { name: e.target.value } })} placeholder={'Enter role name'} />
                     </div>
-                    <Button value={roleData ? "Update Role" : "Create Role"} />
+                    <Button value={roleData ? "Update Order" : "Create Order"} />
                 </form>
             </div>
             <ToastContainer />

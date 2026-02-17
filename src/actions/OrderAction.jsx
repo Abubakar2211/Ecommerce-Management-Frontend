@@ -28,7 +28,7 @@ export const editOrder = createAsyncThunk(
             return rejectWithValue(error.response.data || "Something went wrong!")
         }
     }
-)
+)   
 
 export const updateOrder = createAsyncThunk(
     "order/updateOrder",

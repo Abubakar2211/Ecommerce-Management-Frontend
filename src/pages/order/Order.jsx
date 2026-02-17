@@ -17,13 +17,13 @@ export default function Permission() {
 
     const dispatch = useDispatch();
     const { orders = [], loading = false } = useSelector(state => state.order) || {};
-    const columns = ['Status', 'Total Price', 'Action'];
-    
+    const columns = ['Name','Status', 'Total Price', 'Action'];
+
     const handleDeleteOrder = (orderId) => {
         dispatch(deleteOrder(orderId));
     };
     useEffect(() => {
-        dispatch(fetchOrders());    
+        dispatch(fetchOrders());
     }, [dispatch]);
     return (
         <>
@@ -37,8 +37,10 @@ export default function Permission() {
                         <Table>
                             <Thead headings={columns} />
                             <Tbody>
+                                {console.log(orders)}
                                 {orders.map((order, index) => (
                                     <Tr key={order.id || index}>
+                                        <Td>{order.user.name}</Td>
                                         <Td>{order.status}</Td>
                                         <Td>{order.total_price}</Td>
                                         <Td flex={true}>

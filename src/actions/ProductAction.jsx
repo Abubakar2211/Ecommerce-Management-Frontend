@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Api from "../utils/api";
-import { handleApiError } from "../utils/js/apiHelpers";
+import { handleApiError, handleApiResponse } from "../utils/js/apiHelpers";
 
 export const fetchProduct = createAsyncThunk(
     "products/fetchProducts",
@@ -10,6 +10,20 @@ export const fetchProduct = createAsyncThunk(
             console.log(response);
             return response.data;
             
+        } catch (error) {
+            handleApiError(error);
+            return rejectWithValue(error.response.data || "Something went wrong!")
+        }
+    }
+)
+export const createProduct = createAsyncThunk(
+    "products/createProducts",
+    async (formData, { rejectWithValue }) => {
+        try {
+            const res = await Api().post("/product",formData);
+            console.log(res);
+            handleApiResponse(res)
+            return res;
         } catch (error) {
             handleApiError(error);
             return rejectWithValue(error.response.data || "Something went wrong!")

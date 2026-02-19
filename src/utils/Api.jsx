@@ -11,6 +11,9 @@ export default function Api() {
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
+            if (config.data instanceof FormData) {
+                config.headers["Content-Type"] = "multipart/form-data";
+            }
             return config;
         },
         (error) => Promise.reject(error)

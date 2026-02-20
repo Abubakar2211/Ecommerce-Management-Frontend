@@ -23,7 +23,7 @@ export const createProduct = createAsyncThunk(
             const res = await Api().post("/product",formData);
             console.log(res);
             handleApiResponse(res)
-            return res;
+            return res.data;
         } catch (error) {
             handleApiError(error);
             return rejectWithValue(error.response.data || "Something went wrong!")

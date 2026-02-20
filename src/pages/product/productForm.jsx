@@ -10,8 +10,8 @@ import { useDispatch } from "react-redux";
 
 export default function OrderForm() {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
-        defaultValues:{
-            vendor_id:1
+        defaultValues: {
+            vendor_id: 1
         }
     });
     const dispatch = useDispatch();
@@ -21,13 +21,17 @@ export default function OrderForm() {
         for (let key in data) {
             if (key === "image" && data[key].length > 0) {
                 const file = data[key][0]
-                formData.append("image",file);
+                formData.append("image", file);
             } else {
                 formData.append(key, data[key]);
             }
         }
-        reset()
-        dispatch(createProduct(formData));
+        dispatch(createProduct(formData))
+            .then(({ payload }) => {
+                if (payload.message) {
+                    reset()
+                }
+            })
     }
     return (
         <Main>

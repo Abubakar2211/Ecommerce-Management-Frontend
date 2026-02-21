@@ -44,45 +44,44 @@ export default function OrderForm() {
                     <div>
                         <Label value={"Name"} />
                         <Input {...register("name", { required: "This is required." })} type={'text'} />
-                        {errors.Name && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Name.message}</p>}
+                        {errors.name && <p className="mt-1 text-sm text-red-500 font-medium">{errors.name.message}</p>}
                     </div>
                     <div>
                         <Label value={"Description"} />
                         <Input {...register("description", { required: "This is required." })} type={'text'} />
-                        {errors.Description && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Description.message}</p>}
+                        {errors.description && <p className="mt-1 text-sm text-red-500 font-medium">{errors.description.message}</p>}
                     </div>
                     <div>
                         <Label value={"Price"} />
                         <Input {...register("price", { required: "This is required." })} type={'number'} />
-                        {errors.Price && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Price.message}</p>}
+                        {errors.price && <p className="mt-1 text-sm text-red-500 font-medium">{errors.price.message}</p>}
                     </div>
                     <div>
                         <Label value={"Stock"} />
                         <Input {...register("stock", { required: "This is required." })} type={'number'} />
-                        {errors.Stock && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Stock.message}</p>}
+                        {errors.stock && <p className="mt-1 text-sm text-red-500 font-medium">{errors.stock.message}</p>}
 
                     </div>
                     <div>
                         <Label value={"Category"} />
                         <Input {...register("category", { required: "This is required." })} type={'text'} />
-                        {errors.Category && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Category.message}</p>}
+                        {errors.category && <p className="mt-1 text-sm text-red-500 font-medium">{errors.category.message}</p>}
 
                     </div>
                     <div>
                         <Label value={"Sub Category"} />
                         <Input {...register("subcategory", { required: "This is required." })} type={'text'} />
-                        {errors.SubCategory && <p className="mt-1 text-sm text-red-500 font-medium">{errors.SubCategory.message}</p>}
-
+                        {errors.subcategory && <p className="mt-1 text-sm text-red-500 font-medium">{errors.subcategory.message}</p>}
                     </div>
                     <div>
                         <Label value={"Brand"} />
                         <Input {...register("brand", { required: "This is required." })} type={'text'} />
-                        {errors.Brand && <p className="mt-1 text-sm text-red-500 font-medium">{errors.Brand.message}</p>}
+                        {errors.brand && <p className="mt-1 text-sm text-red-500 font-medium">{errors.brand.message}</p>}
                     </div>
                     <div>
                         <Label value={"Image"} />
                         <Input type={'file'}   {...register("image", { required: "Image is required", validate: (files) => files.length > 0 || "Please select a file", })} />
-                        {errors.Image && (<p className="mt-1 text-sm text-red-500 font-medium">{errors.Image.message}</p>)}
+                        {errors.image && (<p className="mt-1 text-sm text-red-500 font-medium">{errors.image.message}</p>)}
                     </div>
                     <Button value={"Create Product"} />
                 </form>
